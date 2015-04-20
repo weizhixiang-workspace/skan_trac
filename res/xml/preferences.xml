@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="app_root_screen">  
+    <PreferenceScreen android:title="@string/pref_app_settings" android:key="app_general_settings_screen">
+    	<PreferenceCategory android:title="@string/pref_app_connection_settings" android:key="connection">
+    		<CheckBoxPreference android:defaultValue="true" android:key="connection_is_auto" android:summary="@string/pref_auto_connect" android:title="@string/pref_auto_connect" />
+    		<CheckBoxPreference android:defaultValue="true" android:key="connection_is_autoreconnect" android:summary="@string/pref_auto_reconnect" android:title="@string/pref_auto_reconnect" />
+    	</PreferenceCategory>
+    	<PreferenceCategory android:title="@string/pref_app_sound_settings" android:key="sounds">
+    		<CheckBoxPreference android:defaultValue="true" android:key="sounds_is_enable" android:summary="@string/pref_sounds" android:title="@string/pref_sounds" />
+    		<CheckBoxPreference android:key="sounds_is_vibration_on" android:title="@string/pref_vibrating" android:summary="@string/pref_vibrating" android:defaultValue="false"/>
+    	</PreferenceCategory>
+    	<PreferenceCategory android:title="@string/pref_app_screen_settings" android:key="screen">
+    		<net.jayschwa.android.preference.SliderPreference android:key="tools_screen_brightness" 
+    			android:summary="" android:title="@string/pref_screen_brightness_title" android:dialogMessage="@string/pref_screen_brightness_dialog"    		 
+    		android:defaultValue="1" />
+    	</PreferenceCategory>    	
+    </PreferenceScreen>
+    <PreferenceScreen android:key="chart_settings_screen" android:title="@string/pref_chart_settings">
+    	<PreferenceCategory android:title="General" android:key="general">
+    		<EditTextPreference android:title="@string/pref_x_width" android:summary="@string/pref_x_width_summary" android:key="chart_window_size_ms" android:numeric="integer" android:defaultValue="2000" />
+    		<CheckBoxPreference android:key="chart_is_filter_on" android:summary="@string/pref_filter_values_sum" android:title="@string/pref_filter_values" android:defaultValue="false"/>    	
+    		<EditTextPreference android:title="@string/pref_filter_length" android:key="filter_length" android:numeric="integer" android:defaultValue="4" />
+    		<CheckBoxPreference android:key="chart_is_fill_areas" android:summary="@string/pref_fill_graph_sum" android:title="@string/pref_fill_graph" android:defaultValue="false"/>
+    	</PreferenceCategory>
+    	<PreferenceCategory android:title="Dynamic mode" android:key="dynamic mode">    		
+    		<EditTextPreference android:summary="Threshold time delta (in samples)" android:title="Threshold time delta" android:key="dynamic_threshold_time_delta" android:defaultValue="1"/>    	
+    	</PreferenceCategory>    	    	    	  
+	</PreferenceScreen>    
+    <PreferenceCategory android:key="tools" android:title="Tools">
+    	<CheckBoxPreference android:key="tools_flashlight" android:title="@string/pref_flashlight" android:defaultValue="false"/>
+    </PreferenceCategory>    
+</PreferenceScreen>

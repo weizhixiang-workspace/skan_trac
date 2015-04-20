@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SKAN-TRAC Tesla v 1.1</string>
+    <string name="state_connect_to">Connect to</string>
+    <string name="state_connecting">Connecting&#8230;</string>
+    <string name="state_not_connected">Not connected</string>
+    <string name="bt_not_enabled_leaving">Bt not enabled leaving</string>
+
+    <!--Menu-->
+    <string name="menu_item_scan">Connect a device</string>
+    <string name="menu_item_discoverable">Make discoverable</string>
+    <string name="menu_item_disconnect">Disconnect</string>
+    <!--Menu-->
+
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="button_scan">Scan for devices</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="scanning">Scanning for devices&#8230;</string>
+    <string name="select_device">Select a device to connect</string>
+    <string name="select_gps_points">Add your current location</string>
+    <string name="none_found">No devices found</string>
+    <string name="output_label">Output log:</string>
+    <string name="message_read">Message read:</string>
+
+    <!--Preference-->
+    <string name="settings">Settings</string>
+    
+    <string name="pref_app_settings">Application settings</string>
+    
+    <string name="pref_flashlight">Flashlight</string>
+    
+    <string name="pref_app_sound_settings">Sound</string>
+    <string name="pref_sounds">Sounds</string>
+    <string name="pref_vibrating">Vibration</string>
+    
+    <string name="pref_app_screen_settings">Screen</string>
+    <string name="pref_screen_brightness_title">Brightness</string>    
+    <string name="pref_screen_brightness_dialog">Change slider value to correct the brightness of the screen</string>    
+    
+    <string name="pref_app_connection_settings">Connection</string>
+    <string name="pref_auto_reconnect">Auto reconnect</string>
+    <string name="pref_auto_connect">Auto connecting</string>
+    <string name="prefDeviceConnectAddress">Device connect address</string>
+    <string name="pref_device_connect_address">Device connect address</string>
+    
+    <string name="pref_update_setting">Update Settings</string>                       
+        
+    <string name="pref_chart_settings">Chart settings</string>
+    <string name="pref_filter_values">Filter</string>
+    <string name="pref_filter_values_sum">Enable filtraion on graph</string>
+    <string name="pref_fill_graph">Fill areas</string>
+    <string name="pref_fill_graph_sum">Fill areas under the graph line</string>
+    <string name="pref_x_width">X axis duration (ms)</string>
+    <string name="pref_x_width_summary"></string>    
+    <string name="pref_filter_length">Filter window length</string>                 
+    
+    <string name="pref_discr_positive_colored">Colored metals have a positive values</string>
+    <string name="pref_discr_positive_colored_summary">Colored metals have a positive values (for discriminator)</string>
+    
+    <string name="menu_item_monitor">Monitor</string>
+    <string name="monitor_activity_label">Monitor data</string>    
+    
+    <string name="btnSetZeroText">Zero</string>
+    <string name="btnThreshold">Threshold</string>
+    <string name="btnSensitivity">Sensitivity</string>    
+    <string name="btnThresholdDesc">+</string>
+    <string name="btnThresholdInc">+</string>
+    <string name="btnThresholdDec">-</string>
+    <string name="btnSensitivityInc">+</string>
+    <string name="btnSensitivityDec">-</string>
+    <string name="checkBoxAllMetal">All</string>
+    <string name="checkBoxBlackMetal">Black</string>
+    <string name="checkBoxColoredMetal">Colored</string>
+    
+    <string name="labelTreshold">Threshold</string>
+    <string name="labelSensitivity">Sensitivity</string>       
+    <string name="labelDiscriminator">Discriminator</string>
+    
+    <string name="contentDescription"></string>  
+</resources>

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:keepScreenOn="true"
+    android:orientation="horizontal"
+    android:weightSum="1" >
+
+    <LinearLayout
+        android:id="@+id/leftPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingBottom="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp" >
+
+        <ImageButton
+            android:id="@+id/autoScaleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:baselineAlignBottom="false"
+            android:contentDescription="@string/contentDescription"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/auto_scale_button" />
+
+        <LinearLayout
+            android:id="@+id/thresholdSetter"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/thresholdPlusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_plus_normal" />
+
+            <TextView
+                android:id="@+id/thresholdText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:text="100"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/thresholdLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/contentDescription"
+                android:scaleType="fitCenter"
+                android:src="@drawable/sensivity_level" />
+
+            <ImageButton
+                android:id="@+id/thresholdMinusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_minus_normal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sensitivitySetter"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical|center"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/sensitivityPlusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_plus_normal" />
+
+            <TextView
+                android:id="@+id/sensitivityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:text="100"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/sensitivityLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/contentDescription"
+                android:scaleType="fitCenter"
+                android:src="@drawable/sensitivity_src" />
+
+            <ImageButton
+                android:id="@+id/sensitivityMinusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_minus_normal" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/zeroButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/contentDescription"
+            android:scaleType="fitCenter"
+            android:src="@drawable/zero_button" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:id="@+id/graphChartContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/photoChargeImage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="100dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/phone_charge" />
+
+        <TextView
+            android:id="@+id/photoChargeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/photoChargeImage"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="12dp"
+            android:text="0%"
+            android:textColor="#000000"
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/sensorChargeImageV"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/sensor_charge" />
+
+        <TextView
+            android:id="@+id/sensorChargeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/sensorChargeImageV"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="12dp"
+            android:text="0%"
+            android:textColor="#000000"
+            android:textSize="12dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/rightPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingBottom="2dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingTop="2dp" >
+
+        <ImageButton
+            android:id="@+id/gpsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:alpha="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/contentDescription"
+            android:scaleType="fitCenter"
+            android:src="@drawable/gps_button" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/contentDescription"
+            android:scaleType="fitCenter"
+            android:src="@drawable/settings_button" />
+
+        <LinearLayout
+            android:id="@+id/soundVolumeSetter"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_bg"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/soundPlusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_plus_normal" />
+
+            <TextView
+                android:id="@+id/soundText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_weight="1"
+                android:text="100"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/soundVolume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="4"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/contentDescription"
+                android:scaleType="fitCenter"
+                android:src="@drawable/sound_volume" />
+
+            <ImageButton
+                android:id="@+id/soundMinusButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:contentDescription="@string/contentDescription"
+                android:focusable="false"
+                android:scaleType="fitCenter"
+                android:src="@drawable/button_minus_normal" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/colorBlackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/contentDescription"
+            android:scaleType="fitCenter"
+            android:src="@drawable/button_bw_normal" />
+
+        <ImageButton
+            android:id="@+id/staticButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:alpha="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/contentDescription"
+            android:scaleType="fitCenter"
+            android:src="@drawable/static_button" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

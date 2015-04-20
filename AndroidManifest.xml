@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.tatarinov.BluetoothDataAnalyzer"
+          android:versionCode="1"
+          android:versionName="4.6.1">
+
+    <uses-sdk android:minSdkVersion="11"
+           android:targetSdkVersion="21" />
+    
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />   
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 
+    
+    <uses-feature android:name="android.hardware.camera" />
+
+    <application
+         	android:supportsRtl="false"
+         	android:allowBackup="true"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name=".Activities.MainActivity"
+                android:label="@string/app_name"
+                android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <uses-library android:name="com.google.android.maps"/>        
+        <activity android:name=".Activities.DeviceListActivity"
+                  android:label="@string/select_device"
+                  android:theme="@style/DialogTheme"
+                  android:configChanges="orientation|keyboardHidden" />
+        <activity android:name=".Activities.PreferencesActivity"
+                  android:label="@string/settings"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden" />
+        <activity android:name=".Activities.MonitorActivity"
+                  android:label="@string/monitor_activity_label"
+                  android:theme="@style/AppTheme"
+                  android:configChanges="orientation|keyboardHidden" />                           
+        <activity android:name=".Activities.GpsPointsListActivity"
+        	android:label="@string/select_gps_points"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden" />
+        <activity android:name=".Activities.GpsPointNaviActivity"
+        	android:label="@string/select_gps_points"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden" />  
+		<activity android:name=".Activities.GpsPointEditorActivity"
+        	android:label="@string/select_gps_points"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden" />  
+    </application>
+</manifest>
