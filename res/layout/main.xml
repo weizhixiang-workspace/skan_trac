@@ -18,21 +18,6 @@
         android:paddingRight="2dp"
         android:paddingTop="2dp" >
 
-        <ImageButton
-            android:id="@+id/autoScaleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="2dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:baselineAlignBottom="false"
-            android:contentDescription="@string/contentDescription"
-            android:cropToPadding="false"
-            android:scaleType="fitCenter"
-            android:src="@drawable/auto_scale_button" />
-
         <LinearLayout
             android:id="@+id/thresholdSetter"
             android:layout_width="match_parent"
@@ -66,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:layout_marginBottom="2dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:text="100"
                 android:textColor="#000000"
                 android:textSize="16sp"
@@ -138,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
                 android:layout_marginBottom="2dp"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:text="100"
                 android:textColor="#000000"
                 android:textSize="16sp"
@@ -202,6 +187,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal" >
+
         </LinearLayout>
 
         <ImageView
@@ -248,6 +234,25 @@
             android:textColor="#000000"
             android:textSize="12dp" />
 
+        <TextView
+            android:id="@+id/currentValueLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="12dp"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/versionAppLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="v1.0"
+            android:textColor="#000000"
+            android:textSize="9sp" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -260,20 +265,6 @@
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:paddingTop="2dp" >
-
-        <ImageButton
-            android:id="@+id/gpsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="2dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:alpha="1"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/contentDescription"
-            android:scaleType="fitCenter"
-            android:src="@drawable/gps_button" />
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -320,7 +311,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:text="100"
                 android:textColor="#000000"
                 android:textSize="16sp"

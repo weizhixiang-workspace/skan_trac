@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Vibrator;
 
 import com.tatarinov.BluetoothDataAnalyzer.CameraHelper;
 import com.tatarinov.BluetoothDataAnalyzer.GlobalPreferences;
@@ -80,13 +79,15 @@ public class MainActivity extends Activity {
     private Timer mTimer;
     private TimerTask mTimerTask;
     
-    private Vibrator mVibrator;
-    private boolean mIsVibrated; 
-    
     private AudioManager mAudioManager;
         
     private TextView mBatteryChargeTextView;
     private TextView mSensorChargeTextView;
+    private static TextView mCurrentValueTextView;
+    
+    public static void setCurrentValue(int val){
+    	mCurrentValueTextView.setText(String.format("����������: %d", val));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class MainActivity extends Activity {
     	this.mStartTime = (new java.util.Date()).getTime();
     	
     	PreferencesActivity.setBrightness(this, this.mPreferences.getScreenBrightness());
-        this.mVibrator = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+    	SoundGenerator.create(this);        
         this.mCameraHelper = new CameraHelper(getBaseContext());
     	
         this.createUserInterface();        
@@ -124,7 +125,7 @@ public class MainActivity extends Activity {
             this.mToastObject.show();              
             finish();            
         }                             
-    }    
+    }           
     
     private void onTimeProcess(){    	
     	this.mThresholdPicker.timeProcess();
@@ -176,18 +177,18 @@ public class MainActivity extends Activity {
             }
         });
         
-    	ImageButton gpsButton = (ImageButton) findViewById(R.id.gpsButton);
-    	if(GpsLocationService.getInstance(this).isGPSEnabled()){
-    		gpsButton.setOnClickListener(new View.OnClickListener() {
-            	@Override
-                public void onClick(View view) {
-            		showActivityById(R.id.gpsButton);        		    
-                }
-            });  	
-    	} else {
-    		gpsButton.setEnabled(false);
-    		gpsButton.setAlpha(0.5f);    		
-    	}    	            
+//    	ImageButton gpsButton = (ImageButton) findViewById(R.id.gpsButton);
+//    	if(GpsLocationService.getInstance(this).isGPSEnabled()){
+//    		gpsButton.setOnClickListener(new View.OnClickListener() {
+//            	@Override
+//                public void onClick(View view) {
+//            		showActivityById(R.id.gpsButton);        		    
+//                }
+//            });  	
+//    	} else {
+//    		gpsButton.setEnabled(false);
+//    		gpsButton.setAlpha(0.5f);    		
+//    	}    	            
         
         ImageButton settings = (ImageButton) findViewById(R.id.settingsButton);
         settings.setOnClickListener(new View.OnClickListener() {
@@ -210,6 +211,10 @@ public class MainActivity extends Activity {
                 	case  R.id.menu_item_monitor:
                 		showActivityById(R.id.menu_item_monitor);                		
                 		return true;
+                		
+                 	case  R.id.menu_item_gps:
+                		showActivityById(R.id.menu_item_gps);                		
+                		return true;
 
                 	case R.id.menu_item_disconnect:
                 		if (mBluetoothService != null) {                			
@@ -226,14 +231,6 @@ public class MainActivity extends Activity {
             	return false;            
             }
         });	
-        
-        ImageButton autoScale = (ImageButton) findViewById(R.id.autoScaleButton);
-        autoScale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            	showPanels(false);            	            
-            }
-        });
         
         this.mToastObject = Toast.makeText(getBaseContext(), "", Toast.LENGTH_SHORT);
         
@@ -266,7 +263,7 @@ public class MainActivity extends Activity {
 			public void onValueChange(int value, boolean i) {				
 		        mPreferences.setThreshold(mThresholdPicker.getValue());		
 		        
-				String toastMessage = String.format(Locale.getDefault(), "The threshold value was changed, current value: %d", value);
+				String toastMessage = String.format(Locale.getDefault(), "����� �������, ������� ��������: %d", value);
 				mToastObject.setText(toastMessage);        		
 				mToastObject.show();
 			}
@@ -279,7 +276,7 @@ public class MainActivity extends Activity {
 			public void onValueChange(int value, boolean i) {		
 				mPreferences.setSensitivity(mSensitivityPicker.getValue());
 				
-				String toastMessage = String.format(Locale.getDefault(), "The sensitivity value was changed, current value: %d", value);
+				String toastMessage = String.format(Locale.getDefault(), "���������������� ��������, ������� ��������: %d", value);
 				mToastObject.setText(toastMessage);        		
 				mToastObject.show();
 			}
@@ -415,14 +412,14 @@ public class MainActivity extends Activity {
     		startActivityForResult(monitorIntent, IntentRequestCodes.RESULT_MONITOR);
     		break;
     		
+    	case  R.id.menu_item_gps:
+    		Intent gpsActivity = new Intent(this, GpsPointsListActivity.class);    		
+    		startActivity(gpsActivity);
+    		break;
+    		
     	case  R.id.menu_item_settings:
     	    Intent prefActivity = new Intent(this, PreferencesActivity.class);
             startActivity(prefActivity);  
-    		break;
-    		
-    	case R.id.gpsButton:
-    		Intent gpsActivity = new Intent(this, GpsPointsListActivity.class);    		
-    		startActivity(gpsActivity);
     		break;
     	}    	    	       
     }    
@@ -447,31 +444,13 @@ public class MainActivity extends Activity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }    	
-    }
+    }    
     
-    private void vibrate(boolean on){    	
-    	if (this.mPreferences.isEnableVibrating() && this.mVibrator != null){    		
-    		if (on){
-    			if (!this.mIsVibrated){
-    				this.mVibrator.vibrate(500);
-    				this.mIsVibrated = true;
-    			}    			
-        	} else {
-        		if (this.mIsVibrated){
-        			this.mVibrator.cancel();
-        			this.mIsVibrated = false;
-        		}        		
-        	}	
-    	}    	
-    }
-    
-    private void generateSound(int currentValue){    	
+    private void generateSound(double currentValue){    	
     	if (this.mPreferences.getGraphWorkMode() == GraphWorkMode.Dynamic 
     			|| !this.mPreferences.isEnableSounds())
     		return;    	    
-    	
-    	this.vibrate(currentValue != 0);
-    		 
+    	    	
     	try {
     		if (currentValue > 0) {
     			SoundGenerator.getInstance().playTone(1500);    			
@@ -501,7 +480,7 @@ public class MainActivity extends Activity {
     	return this.mLimitOverflow;    	
     }
     
-    private int doDiscrimination(int data){
+    private double doDiscrimination(double data){
     	if (this.mPreferences.getGraphWorkMode() == GraphWorkMode.Dynamic)
     		return data;
     	
@@ -531,6 +510,7 @@ public class MainActivity extends Activity {
     private void initBatteryLevelService(){
     	this.mBatteryChargeTextView = (TextView) findViewById(R.id.photoChargeText);
     	this.mSensorChargeTextView = (TextView) findViewById(R.id.sensorChargeText);
+    	mCurrentValueTextView = (TextView) findViewById(R.id.currentValueLabel);
     	BroadcastReceiver batteryReceiver = new BroadcastReceiver() {    	        	    
     	    @Override
     	    public void onReceive(Context context, Intent intent) {
@@ -583,10 +563,13 @@ public class MainActivity extends Activity {
           
         // remember current date
         java.util.Date date= new java.util.Date();
-        double currentTime = (date.getTime()-mStartTime)/1000.0;
+        double currentTime = (date.getTime()-mStartTime)/1000.0;       
+        
+        double sensitivity = 100 - this.mSensitivityPicker.getValue();
+        sensitivity = (sensitivity* sensitivity*sensitivity)/10000;        
                            
         // calc the current value according to current sensitivity
-        int currentValue = (data - this.mZeroValue)/ (100 - this.mSensitivityPicker.getValue());               
+        double currentValue = (data - this.mZeroValue)/ (1+sensitivity);               
         
     	// apply discriminator
         currentValue = this.doDiscrimination(currentValue);        
@@ -655,7 +638,7 @@ public class MainActivity extends Activity {
 
                 case BluetoothMessages.MESSAGE_DEVICE_NAME:                    
                     mConnectedDeviceInfo = message.getData().getString(kDeviceName);
-                    mToastObject.setText("Connected to " + mConnectedDeviceInfo);
+                    mToastObject.setText("��������� � " + mConnectedDeviceInfo);
                     mToastObject.show();                    
                     break;
 

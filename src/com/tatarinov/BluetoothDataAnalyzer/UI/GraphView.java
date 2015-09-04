@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -13,6 +12,7 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import com.tatarinov.BluetoothDataAnalyzer.GlobalPreferences;
+import com.tatarinov.BluetoothDataAnalyzer.Activities.MainActivity;
 import com.tatarinov.BluetoothDataAnalyzer.Graph.DynamicGDP;
 import com.tatarinov.BluetoothDataAnalyzer.Graph.GraphDataProcessor;
 import com.tatarinov.BluetoothDataAnalyzer.Graph.GraphWorkMode;
@@ -118,8 +118,8 @@ public class GraphView {
     	DynamicGDP gdp = (DynamicGDP)this.mGraphData;
     	
     	// Устанавливаем в качестве титула текущее максимальное значение
-    	int maxPeakValue = (int)gdp.getPeakValue();    	
-    	this.mSeriesRenderer.setChartTitle(String.format("Max value: %d", maxPeakValue));
+    	int maxPeakValue = (int)gdp.getPeakValue(); 
+    	MainActivity.setCurrentValue(maxPeakValue);    	
     	
     	if (this.mSeriesRenderer.getXAxisMax() != 2)
     		this.mSeriesRenderer.setXAxisMax(2);	    
@@ -156,8 +156,8 @@ public class GraphView {
    
 		if (dataPoints.size() > 0) {
     		// Устанавливаем новый титул для графика    	    			
-    		Point last = dataPoints.get(dataPoints.size()-1);    		    		
-    		this.mSeriesRenderer.setChartTitle(String.format("Current value: %d", (int)last.getY()));
+    		Point last = dataPoints.get(dataPoints.size()-1);   
+    		MainActivity.setCurrentValue((int)last.getY());
     		
     		// Сдвигаем ось времени на время новых значений
     		double xMax = this.mSeriesRenderer.getXAxisMax();
@@ -220,10 +220,10 @@ public class GraphView {
         multipleRenderer.setAntialiasing(true);
         multipleRenderer.setInScroll(true);
 
-        multipleRenderer.setChartTitle("Current value:");
+        multipleRenderer.setChartTitle("");              
         multipleRenderer.setChartTitleTextSize((float) 20.0);
-        multipleRenderer.setXTitle("Seconds");
-        multipleRenderer.setYTitle("Count");               
+        multipleRenderer.setXTitle("");
+        multipleRenderer.setYTitle("");               
 
         multipleRenderer.setPanEnabled(false, false);
 

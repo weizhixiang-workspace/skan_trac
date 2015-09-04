@@ -1,7 +1,5 @@
 package com.tatarinov.BluetoothDataAnalyzer;
 
-import java.util.zip.DeflaterOutputStream;
-
 import com.tatarinov.BluetoothDataAnalyzer.Graph.DiscriminatorTypes;
 import com.tatarinov.BluetoothDataAnalyzer.Graph.GraphWorkMode;
 
@@ -58,7 +56,7 @@ public class GlobalPreferences {
     }
       
     public GlobalPreferences(Context context){
-        this.mSharedPreferences  = context.getSharedPreferences(kPreferencesFileName, Context.MODE_PRIVATE);
+        this.mSharedPreferences  = context.getSharedPreferences(kPreferencesFileName, Context.MODE_PRIVATE);               
                               
         this.loadPreferences();
         

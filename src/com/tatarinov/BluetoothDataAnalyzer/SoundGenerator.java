@@ -3,10 +3,13 @@ package com.tatarinov.BluetoothDataAnalyzer;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.content.Context;
 
 public class SoundGenerator {   
 	
@@ -90,12 +93,17 @@ public class SoundGenerator {
 	}
 
     private static SoundGenerator instance;    
-    public static SoundGenerator getInstance(){
-    	if (instance == null){
-    		instance = new SoundGenerator();
-    	}
+    public static SoundGenerator getInstance(){    	
     	return instance;
     }          
+    
+    public static void create(Activity activity){   
+    	instance = new SoundGenerator();
+    	instance.mVibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);    	
+    }
+        
+    private Vibrator mVibrator;
+    private boolean mIsVibrated; 
     
     private Map<Integer, SoundTone> mTonesPool = new HashMap<Integer, SoundTone>();
     private int mCurrentPlayingTone;
@@ -103,7 +111,24 @@ public class SoundGenerator {
     private SoundGenerator(){    	
     	mTonesPool.put(1500, new SoundTone(1500));
     	mTonesPool.put(500, new SoundTone(500));
-    }   
+    }
+    
+    public void vibrate(boolean on){ 
+    	GlobalPreferences pref = GlobalPreferences.getInstance(null);
+    	if (pref.isEnableVibrating() && this.mVibrator != null){    		
+    		if (on){    			
+    			if (!this.mIsVibrated){    				
+    				this.mVibrator.vibrate(300);
+    				this.mIsVibrated = true;
+    			}    			
+        	} else {        		
+        		if (this.mIsVibrated){
+        			this.mVibrator.cancel();
+        			this.mIsVibrated = false;
+        		}        		
+        	}	
+    	}    	
+    }
     
     public void stop() {
     	SoundTone currentTone = mTonesPool.get(mCurrentPlayingTone);    	

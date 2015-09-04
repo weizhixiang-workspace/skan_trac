@@ -35,7 +35,7 @@ public class DynamicGDP extends GraphDataProcessor {
 	public DynamicGDP(GraphView view) {
 		super(view);	
 		this.mBlackData = new XYSeries("BlackLevel"); 
-		this.mColoredData = new XYSeries("ColoredLevel");		
+		this.mColoredData = new XYSeries("ColoredLevel");			
 	}
 	
 	private void zeroDetect(Point point, double thr){
@@ -212,26 +212,40 @@ public class DynamicGDP extends GraphDataProcessor {
 		this.mDirection = 0;			
 	}	
 	
+	private int getTone(double peakValue){
+		if (peakValue > 0) {
+			double extra = peakValue/4;
+			if (extra > 500)
+				extra = 500;
+			return 1500 + (int)extra;
+		} else {
+			double extra = peakValue/4;
+			if (extra > 500)
+				extra = 500;
+			return 500 + (int)extra;
+		}	
+	}
+	
 	private void generateSound(){
 		SoundGenerator sound = SoundGenerator.getInstance();
-		if (this.mSoundGenerateCounter > 0){			
-			sound.playTone(1500);
-			if (--this.mSoundGenerateCounter == 0)
-				sound.stop();
-		} else if (this.mSoundGenerateCounter < 0){			
-			sound.playTone(500);
-			if (++this.mSoundGenerateCounter == 0)
-				sound.stop();
-		}		
+					
+		if (this.mSoundGenerateCounter > 0)
+			--this.mSoundGenerateCounter;
+		else
+			++this.mSoundGenerateCounter;
+																
+		sound.playTone(getTone(this.mBuildPeakvalue));
+		
+		if (this.mSoundGenerateCounter == 0){
+			sound.stop();
+		}
 	}
 	
 	private void startSound(){
 		SoundGenerator sound = SoundGenerator.getInstance();
-		if (this.mLocalMax > 0){
-			sound.playTone(1500);
-		} else if (this.mLocalMax < 0){
-			sound.playTone(500);
-		}
+		sound.vibrate(false);
+		sound.vibrate(true);
+		sound.playTone(getTone(this.mLocalMax));		
 	}
 	
 	private boolean clearViewRoutine(Point point){

@@ -13,8 +13,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />   
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera" />    
 
     <application
          	android:supportsRtl="false"
@@ -22,6 +23,16 @@
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
             android:theme="@style/AppTheme">
+            
+		<receiver android:enabled="true" android:exported="true" 
+		    android:name=".Activities.RebootReceiver"
+		    android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+		    <intent-filter>
+		            <action android:name="android.intent.action.BOOT_COMPLETED" />
+		            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+		            <category android:name="android.intent.category.DEFAULT" />
+		    </intent-filter>
+    	</receiver>    	
         <activity
                 android:name=".Activities.MainActivity"
                 android:label="@string/app_name"
@@ -39,6 +50,7 @@
         <activity android:name=".Activities.PreferencesActivity"
                   android:label="@string/settings"
                   android:theme="@style/AppTheme"
+                  android:screenOrientation="landscape"
                   android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".Activities.MonitorActivity"
                   android:label="@string/monitor_activity_label"
@@ -47,10 +59,12 @@
         <activity android:name=".Activities.GpsPointsListActivity"
         	android:label="@string/select_gps_points"
             android:theme="@style/AppTheme"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden" />
         <activity android:name=".Activities.GpsPointNaviActivity"
         	android:label="@string/select_gps_points"
             android:theme="@style/AppTheme"
+            android:screenOrientation="landscape"
             android:configChanges="orientation|keyboardHidden" />  
 		<activity android:name=".Activities.GpsPointEditorActivity"
         	android:label="@string/select_gps_points"

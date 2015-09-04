@@ -1,10 +1,5 @@
 package com.tatarinov.BluetoothDataAnalyzer.Graph.Filters;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.tatarinov.BluetoothDataAnalyzer.Graph.GraphDataProcessor;
-
 public class LinearFilter extends Filter {
 //	protected String getSeriesName(){
 //		return "LinearLevel";
