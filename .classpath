@@ -6,6 +6,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/SliderPreference"/>
-	<classpathentry kind="lib" path="I:/Workspace/fragma/bluetoothdataanalyzer/libs/gson-2.3.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

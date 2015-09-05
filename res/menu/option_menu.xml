@@ -6,7 +6,7 @@
           android:title="@string/menu_item_monitor"
             android:visible="false"/>
     <item android:id="@+id/menu_item_settings"
-          android:title="Settings" />
+          android:title="Настройки" />
     <item android:id="@+id/menu_item_disconnect"
           android:title="@string/menu_item_disconnect"
             android:visible="false"/>
