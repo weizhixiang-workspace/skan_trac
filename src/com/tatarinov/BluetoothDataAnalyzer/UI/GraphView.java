@@ -94,13 +94,11 @@ public class GraphView {
     	this.mIsNeedRefresh = true;    	
     }
     
-    public void timeProcess(){    	
-    	// Процессим данные
+    public void timeProcess(){    	    	
     	if (this.mGraphData.timeProcess()){
     		this.mIsNeedRefresh = true;
     	}    	
     	
-    	// Если были обновления, то изменяем и перерисовываем график
     	if (this.mIsNeedRefresh){
     		this.mIsNeedRefresh = false;
     		
@@ -116,9 +114,8 @@ public class GraphView {
     
     private void processDynamicMode(){
     	DynamicGDP gdp = (DynamicGDP)this.mGraphData;
-    	
-    	// Устанавливаем в качестве титула текущее максимальное значение
-    	int maxPeakValue = (int)gdp.getPeakValue(); 
+    	 
+    	double maxPeakValue = gdp.getPeakValue(); 
     	MainActivity.setCurrentValue(maxPeakValue);    	
     	
     	if (this.mSeriesRenderer.getXAxisMax() != 2)
@@ -154,20 +151,17 @@ public class GraphView {
     		this.setWindowSize(this.mWindowSize);
     	}
    
-		if (dataPoints.size() > 0) {
-    		// Устанавливаем новый титул для графика    	    			
+		if (dataPoints.size() > 0) {    		    	    		
     		Point last = dataPoints.get(dataPoints.size()-1);   
-    		MainActivity.setCurrentValue((int)last.getY());
-    		
-    		// Сдвигаем ось времени на время новых значений
+    		MainActivity.setCurrentValue(last.getY());
+    		    		
     		double xMax = this.mSeriesRenderer.getXAxisMax();
     		if (last.getX() > xMax){
     			double shiftX = last.getX() - xMax;    			
     			this.mSeriesRenderer.setXAxisMax(shiftX + xMax);
     			this.mSeriesRenderer.setXAxisMin(shiftX + mSeriesRenderer.getXAxisMin());    			
     		}
-    		
-    		// Изменяем масштаб оси Y, если нужно
+    		 
     		this.updateYLimits();    		    		    		     
 		}
     }

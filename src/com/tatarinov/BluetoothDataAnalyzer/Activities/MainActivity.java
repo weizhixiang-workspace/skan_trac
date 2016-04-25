@@ -85,8 +85,10 @@ public class MainActivity extends Activity {
     private TextView mSensorChargeTextView;
     private static TextView mCurrentValueTextView;
     
-    public static void setCurrentValue(int val){
-    	mCurrentValueTextView.setText(String.format("����������: %d", val));
+    private int soundPickerVolume;
+    
+    public static void setCurrentValue(double val){
+    	mCurrentValueTextView.setText(String.format("Current value: %d", (int)val));
     }
 
     @Override
@@ -116,18 +118,22 @@ public class MainActivity extends Activity {
 
         // start bluetooth adapter
     	this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            if (mPreferences.isDebug()) {
-                Log.e(kTag, "Bluetooth is not available");
-            }
-
-            this.mToastObject.setText("Bluetooth is not available");
+        if (mBluetoothAdapter == null) {              	
+            this.mToastObject.setText(this.getString(R.string.bt_not_enabled_leaving));
             this.mToastObject.show();              
             finish();            
         }                             
-    }           
+    }                
     
-    private void onTimeProcess(){    	
+    private void onTimeProcess(){
+    	int curVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);    	    	
+    	if (curVolume != soundPickerVolume){
+    		soundPickerVolume = curVolume;
+    		SoundGenerator.getInstance().SetMute(soundPickerVolume == 0);
+    		final int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);   
+    		float v = curVolume;    		
+    		mSoundVolumePicker.setValue((int) ((v/maxVolume)*100));						        		
+    	}    	
     	this.mThresholdPicker.timeProcess();
     	this.mSensitivityPicker.timeProcess();
     	this.mSoundVolumePicker.timeProcess();    	
@@ -176,20 +182,7 @@ public class MainActivity extends Activity {
                 }     
             }
         });
-        
-//    	ImageButton gpsButton = (ImageButton) findViewById(R.id.gpsButton);
-//    	if(GpsLocationService.getInstance(this).isGPSEnabled()){
-//    		gpsButton.setOnClickListener(new View.OnClickListener() {
-//            	@Override
-//                public void onClick(View view) {
-//            		showActivityById(R.id.gpsButton);        		    
-//                }
-//            });  	
-//    	} else {
-//    		gpsButton.setEnabled(false);
-//    		gpsButton.setAlpha(0.5f);    		
-//    	}    	            
-        
+
         ImageButton settings = (ImageButton) findViewById(R.id.settingsButton);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +212,7 @@ public class MainActivity extends Activity {
                 	case R.id.menu_item_disconnect:
                 		if (mBluetoothService != null) {                			
                 			mBluetoothService.stop();                		
-                			mToastObject.setText(R.string.state_not_connected);
+                			mToastObject.setText(getString(R.string.state_not_connected));
                 			mToastObject.show();                    
                 		}
                 		return true;
@@ -263,7 +256,7 @@ public class MainActivity extends Activity {
 			public void onValueChange(int value, boolean i) {				
 		        mPreferences.setThreshold(mThresholdPicker.getValue());		
 		        
-				String toastMessage = String.format(Locale.getDefault(), "����� �������, ������� ��������: %d", value);
+				String toastMessage = String.format(getString(R.string.threshold_changed)+": %d", value);
 				mToastObject.setText(toastMessage);        		
 				mToastObject.show();
 			}
@@ -276,29 +269,36 @@ public class MainActivity extends Activity {
 			public void onValueChange(int value, boolean i) {		
 				mPreferences.setSensitivity(mSensitivityPicker.getValue());
 				
-				String toastMessage = String.format(Locale.getDefault(), "���������������� ��������, ������� ��������: %d", value);
+				String toastMessage = String.format(getString(R.string.sensitivity_changed)+": %d", value);
 				mToastObject.setText(toastMessage);        		
 				mToastObject.show();
 			}
 		});       
                 
-        final int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        float curVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		int icurVolume = (int) ((curVolume/maxVolume)*100);
-        this.mSoundVolumePicker = new NumberPickerWrapper(icurVolume, 100, 0);
+        final int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+        soundPickerVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+        float curVolume = soundPickerVolume;		
+        if (soundPickerVolume > 0){        	        	
+            SoundGenerator.getInstance().playTone(1500);
+            SoundGenerator.getInstance().stop();        	
+        } else {
+        	SoundGenerator.getInstance().SetMute(true);
+        }
+                                    
+        this.mSoundVolumePicker = new NumberPickerWrapper((int) ((curVolume/maxVolume)*100), 100, 0);
         this.mSoundVolumePicker.init(this, R.id.soundPlusButton, R.id.soundMinusButton, R.id.soundText);
         this.mSoundVolumePicker.setChangeValueListener(new NumberPickerWrapper.ValueChangedListener() {			
 			@Override
 			public void onValueChange(int value, boolean i) {
 				
 				if (i){
-					mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+					mAudioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,
 			                AudioManager.ADJUST_RAISE, 0);
 				} else {
-					mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+					mAudioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM,
 			                AudioManager.ADJUST_LOWER, 0);
 				}				
-				float curVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+				float curVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
 				int val = (int) ((curVolume/maxVolume)*100);
 				mSoundVolumePicker.setValue(val);							
 			}
@@ -447,15 +447,14 @@ public class MainActivity extends Activity {
     }    
     
     private void generateSound(double currentValue){    	
-    	if (this.mPreferences.getGraphWorkMode() == GraphWorkMode.Dynamic 
-    			|| !this.mPreferences.isEnableSounds())
-    		return;    	    
+    	if (!this.mPreferences.isEnableSounds())
+    		return;      	    
     	    	
     	try {
-    		if (currentValue > 0) {
+    		if (currentValue > 0.001) {
     			SoundGenerator.getInstance().playTone(1500);    			
     			    		                       	
-            } else if (currentValue < 0) {
+            } else if (currentValue < -0.001) {
             	SoundGenerator.getInstance().playTone(500);
             	
             } else {              
@@ -525,22 +524,22 @@ public class MainActivity extends Activity {
     }
     
     private void onBltMessageChargeRead(int data){
-    	final int minVoltage = 7;
-    	final int maxVoltage = 7;
+    	final float minVoltage = 7f;
+    	final float maxVoltage = 9f;
     	
     	if (this.mTimer == null)
     		return;
     	
-    	float voltage = 15f * data/1024f;
     	int level = 0;
-    	if (voltage < 7){
+    	float voltage = 15f * data/1024f;    	
+    	if (voltage < minVoltage){
     		level = 0;	
     	} else {
-    		level = (int)((voltage - minVoltage)*100/(maxVoltage-minVoltage));
+    		level = (int)(100 * (voltage - minVoltage)/(maxVoltage-minVoltage));
+    		if (level > 100)
+        		level = 100;        	
     	}
-    	if (level > 100)
-    		level = 100;
-    	
+    
     	setSensorBatteryLevel(level);    	
     }
     
@@ -576,27 +575,34 @@ public class MainActivity extends Activity {
         
         // check if we limit the mininal threshold
         if (this.mPreferences.getGraphWorkMode() == GraphWorkMode.Static){
-        	 if (this.mThresholdPicker.getValue() > 0){
-             	int sign = Math.signum(currentValue) > 0 ? 1 : -1;
-             	if (Math.abs(currentValue) < this.mThresholdPicker.getValue()){
-             		int thresholdCounterSign = Math.signum(this.mThresholdZeroCounter) > 0 ? 1 : -1;        		        	
-             		if (currentValue == 0 || thresholdCounterSign != sign){
-             			this.mThresholdZeroCounter = 0;            		
-             		} else {
-             			this.mThresholdZeroCounter -= thresholdCounterSign;	
-             		}        		
+        	int threshold = this.mThresholdPicker.getValue();
+        	if (threshold > 0){
+        		int sign = Math.signum(currentValue) > 0 ? 1 : -1;
+             	if (Math.abs(currentValue) > threshold){
+             		currentValue -= sign * threshold;
+                 	this.mThresholdZeroCounter = sign * 25;  
+             	} else {
+             		if (this.mThresholdZeroCounter != 0){
+             			int thresholdCounterSign = Math.signum(this.mThresholdZeroCounter) > 0 ? 1 : -1;        		        	
+                 		if (thresholdCounterSign != sign){
+                 			this.mThresholdZeroCounter = 0;            		
+                 		} else {
+                 			this.mThresholdZeroCounter -= thresholdCounterSign;	
+                 		}       	
+             		}             		 		
              		if (this.mThresholdZeroCounter == 0){        			
                  		currentValue = 0;
-             		}    	  
-                 } else {            	            	
-                 	currentValue -= sign * this.mThresholdPicker.getValue();
-                 	this.mThresholdZeroCounter = sign * 25;  
-                 }
-             }    	                                                 
+             		}  else {
+             			currentValue -= sign * threshold;
+             			if (currentValue < 0){
+             				currentValue = 0;
+             			}
+             		}
+                }
+        	}
+        	generateSound(currentValue);    	                                                 
         }
-             
-        this.mGraphView.addValue(new Point(currentTime, currentValue));              
-        generateSound(currentValue);                   
+        this.mGraphView.addValue(new Point(currentTime, currentValue));                                        
     }          
     
     private void onBltMessageDataWrite(int data){     	
@@ -638,7 +644,7 @@ public class MainActivity extends Activity {
 
                 case BluetoothMessages.MESSAGE_DEVICE_NAME:                    
                     mConnectedDeviceInfo = message.getData().getString(kDeviceName);
-                    mToastObject.setText("��������� � " + mConnectedDeviceInfo);
+                    mToastObject.setText(getString(R.string.state_connected_to) +" "+ mConnectedDeviceInfo);
                     mToastObject.show();                    
                     break;
 

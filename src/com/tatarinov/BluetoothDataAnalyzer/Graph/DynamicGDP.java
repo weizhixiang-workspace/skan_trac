@@ -8,6 +8,7 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.tatarinov.BluetoothDataAnalyzer.GlobalPreferences;
 import com.tatarinov.BluetoothDataAnalyzer.SoundGenerator;
@@ -142,11 +143,10 @@ public class DynamicGDP extends GraphDataProcessor {
 						this.mPeakValue = new Point(this.mPeakStartTime, 0);
 						this.mPrevValue = point.getY();
 						this.mLocalMax = this.mPrevValue;
-						this.mClearCounter = 0;
-		    			this.startSound();
-		    			
+						this.mClearCounter = 0;		    					    		
 						this.mPoints.add(point);
-						this.mInBuffer.clear();										
+						this.mInBuffer.clear();						
+						//this.startSound();
 					}
 				}
 			}			
@@ -181,10 +181,19 @@ public class DynamicGDP extends GraphDataProcessor {
 		return this.mBuildPeakvalue;
 	}
 	
-	private void buildPeak(){		
+	private void buildPeak(){				
 		this.mBlackData.clear();
-		this.mColoredData.clear();					
-		this.mBuildPeakvalue = this.mPeakValue.getY();			
+		this.mColoredData.clear();		
+		
+		this.mBuildPeakvalue = Math.abs(this.mPeakValue.getY())
+				-GlobalPreferences.getInstance(null).getThreshold();		
+		if (this.mBuildPeakvalue == 0){
+			//this.mSoundGenerateCounter = 0;
+			this.mDirection = 0;
+			this.mBuildPeakvalue = 0;
+			return;
+		}
+		this.mBuildPeakvalue = this.mDirection * this.mBuildPeakvalue;
 		
 		double peakDuration = this.mPeakValue.getX() - this.mPeakStartTime;
 		if (peakDuration > 1.5)
@@ -208,44 +217,40 @@ public class DynamicGDP extends GraphDataProcessor {
 			if (x > startX && y==0)
 				break;
 		}		
-		this.mSoundGenerateCounter = (int) (Math.signum(mPeakValue.getY()) * peakDuration * 2);
+		this.mSoundGenerateCounter = (int) (Math.signum(mPeakValue.getY()) * peakDuration * 15);	
 		this.mDirection = 0;			
 	}	
 	
-	private int getTone(double peakValue){
+	private int getTone(int peakValue){		
 		if (peakValue > 0) {
-			double extra = peakValue/4;
-			if (extra > 500)
-				extra = 500;
-			return 1500 + (int)extra;
+			return 1500;
 		} else {
-			double extra = peakValue/4;
-			if (extra > 500)
-				extra = 500;
-			return 500 + (int)extra;
+			return 500;
 		}	
 	}
 	
-	private void generateSound(){
-		SoundGenerator sound = SoundGenerator.getInstance();
-					
+	private void generateSound(){				
+		if (this.mSoundGenerateCounter == 0)
+			return;
+		
+		SoundGenerator sound = SoundGenerator.getInstance();	
 		if (this.mSoundGenerateCounter > 0)
 			--this.mSoundGenerateCounter;
 		else
 			++this.mSoundGenerateCounter;
-																
-		sound.playTone(getTone(this.mBuildPeakvalue));
-		
-		if (this.mSoundGenerateCounter == 0){
+																			
+		if (this.mSoundGenerateCounter == 0){	
 			sound.stop();
-		}
+		} else {
+			sound.playTone(getTone(this.mSoundGenerateCounter));
+		}			
 	}
 	
 	private void startSound(){
 		SoundGenerator sound = SoundGenerator.getInstance();
 		sound.vibrate(false);
 		sound.vibrate(true);
-		sound.playTone(getTone(this.mLocalMax));		
+		this.mSoundGenerateCounter = (int)Math.signum(this.mLocalMax)*15;
 	}
 	
 	private boolean clearViewRoutine(Point point){
@@ -263,7 +268,8 @@ public class DynamicGDP extends GraphDataProcessor {
 			}				
 			return res;
 		}		
-		if (this.mPrevValue != point.getY()){
+		
+		if ((int)this.mPrevValue != (int)point.getY()){
 			this.mClearCounter = 0;
 			return res;
 		}

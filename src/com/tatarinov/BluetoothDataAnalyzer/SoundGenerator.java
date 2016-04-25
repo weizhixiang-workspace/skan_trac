@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.util.Log;
 import android.content.Context;
 
 public class SoundGenerator {   
@@ -95,7 +96,14 @@ public class SoundGenerator {
     private static SoundGenerator instance;    
     public static SoundGenerator getInstance(){    	
     	return instance;
-    }          
+    }  
+    
+    private boolean _mute;
+    
+    public void SetMute(boolean mute){
+    	Log.i("sd", mute ? "true" : "false");
+    	_mute = mute;
+    }
     
     public static void create(Activity activity){   
     	instance = new SoundGenerator();
@@ -139,6 +147,9 @@ public class SoundGenerator {
     }
   
     public void playTone(int frequencyOfTone) {    	    
+    	if (_mute)
+    		return;
+    	
     	if (mCurrentPlayingTone == frequencyOfTone)
     		return;    	    
     	

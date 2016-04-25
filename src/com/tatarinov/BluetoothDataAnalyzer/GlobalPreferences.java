@@ -14,7 +14,7 @@ public class GlobalPreferences {
 	
 	public static final String kPreferencesFileName ="BluetoothDataAnalyzerPrefrences";
 	//  Properties
-	public class PreferencesNames {
+	public class PreferencesNames {		
 		public static final String kChartWindowWidth = "chart_window_size_ms";
 		public static final String kChartFilterLength = "filter_length";
 		public static final String kToolsScreenBrightness = "tools_screen_brightness";	

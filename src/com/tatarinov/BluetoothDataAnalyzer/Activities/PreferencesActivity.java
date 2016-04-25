@@ -26,13 +26,13 @@ public class PreferencesActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferences); 
                 
         this.setSummary(GlobalPreferences.PreferencesNames.kChartWindowWidth);
-        this.setSummary(GlobalPreferences.PreferencesNames.kChartFilterLength);
-        this.setSummary(GlobalPreferences.PreferencesNames.kDynamicThresholdDelta);
         this.setSliderValue(GlobalPreferences.PreferencesNames.kToolsScreenBrightness);
+        this.setSummary(GlobalPreferences.PreferencesNames.kChartFilterLength);
+        this.setSummary(GlobalPreferences.PreferencesNames.kDynamicThresholdDelta);        
                 
     	this.mSharedPreferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {        
 	        @Override
-	        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {	        		        	        	
+	        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {	        		        	        		        
 	        	if (key.equals(GlobalPreferences.PreferencesNames.kChartWindowWidth)){
 	        		validateInput(prefs, key, GlobalPreferences.kChartWindowWidthDefault, 1000, Integer.MAX_VALUE);	        		     		       
 	        	}
@@ -43,7 +43,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	        		validateInput(prefs, key, GlobalPreferences.kChartFilterLengthDefault, 3, 20);	        		
 	        	}
 	        	if (key.equals(GlobalPreferences.PreferencesNames.kDynamicThresholdDelta)){
-	        		validateInput(prefs, key, GlobalPreferences.kDynamicThresholdDeltaDefault, 1, 10000);	        		
+	        		validateInput(prefs, key, GlobalPreferences.kDynamicThresholdDeltaDefault, 1, 100);	        		
 	        	}
 	        }
 	    };
