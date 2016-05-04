@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -63,9 +62,7 @@ public class MainActivity extends Activity {
       
     private Toast mToastObject;
 
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private BluetoothService mBluetoothService = null;
-    private String mConnectedDeviceInfo = null;     
+    private BluetoothService mBluetoothService = null;    
     
     private GraphView mGraphView;    
     
@@ -115,14 +112,13 @@ public class MainActivity extends Activity {
         this.mCameraHelper = new CameraHelper(getBaseContext());
     	
         this.createUserInterface();        
-
-        // start bluetooth adapter
-    	this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {              	
-            this.mToastObject.setText(this.getString(R.string.bt_not_enabled_leaving));
-            this.mToastObject.show();              
-            finish();            
-        }                             
+ 
+        this.mBluetoothService = new BluetoothService(getApplicationContext(), bltHandler);
+        if (!this.mBluetoothService.isAvailable()){
+        	 this.mToastObject.setText(this.getString(R.string.bt_not_enabled_leaving));
+             this.mToastObject.show();              
+             finish();     
+        }            	                  
     }                
     
     private void onTimeProcess(){
@@ -210,11 +206,9 @@ public class MainActivity extends Activity {
                 		return true;
 
                 	case R.id.menu_item_disconnect:
-                		if (mBluetoothService != null) {                			
-                			mBluetoothService.stop();                		
-                			mToastObject.setText(getString(R.string.state_not_connected));
-                			mToastObject.show();                    
-                		}
+                		mBluetoothService.stop();                		
+            			mToastObject.setText(getString(R.string.state_not_connected));
+            			mToastObject.show();
                 		return true;
 
                 	case R.id.menu_item_settings:
@@ -334,16 +328,16 @@ public class MainActivity extends Activity {
         if (this.mPreferences.isDebug()) {
             Log.d(kTag, "OnStart method");
         }                    
-
-        if (!this.mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+               
+        if (!this.mBluetoothService.isEnabled()){
+        	Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, IntentRequestCodes.REQUEST_ENABLE_BT);
         }
-
+        
         if (this.mPreferences.isEnableAutoConnect() &&
                 (this.mPreferences.getDeviceConnectAddress() != null &&
                         !this.mPreferences.getDeviceConnectAddress().isEmpty())) {
-        	this.ConnectToDevice(this.mPreferences.getDeviceConnectAddress());
+        	this.mBluetoothService.connect(this.mPreferences.getDeviceConnectAddress());        
         }
     }
     
@@ -356,7 +350,7 @@ public class MainActivity extends Activity {
     public void onStop() {
     	super.onStop();                
         this.mPreferences.savePreferences();
-        
+               
         if (this.mTimer != null){        
         	this.mTimer.cancel();
             this.mTimer = null;
@@ -382,11 +376,7 @@ public class MainActivity extends Activity {
         };               
         this.mTimer.scheduleAtFixedRate(this.mTimerTask, 1000, 40);   
  
-        if (this.mBluetoothService != null) {
-            if (this.mBluetoothService.getState() == BluetoothConnectionState.STATE_NONE) {                
-            	this.mBluetoothService.start();
-            }
-        }
+    	this.mBluetoothService.resume();
         
         // change settings if pref were changed
         if (this.mPreferences.isPreferencesWereChanged()){      
@@ -426,21 +416,15 @@ public class MainActivity extends Activity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();           
-        if (this.mBluetoothService != null) {
-        	this.mBluetoothService.stop();
-        	this.mBluetoothService = null;
-        }               
+        super.onDestroy();   
+        this.mBluetoothService.stop();
+    	this.mBluetoothService = null;            
     }    
- 
-    private void setupBluetoothService(BluetoothDevice device) {        
-    	this.mBluetoothService = new BluetoothService(this, this.mHandler, device);    	           
-    }
     
     private void onBltMessageStateDisconnected(){    	 
     	try {
 			 Thread.sleep(1000L);
-	         ConnectToDevice(this.mPreferences.getDeviceConnectAddress());            
+			 this.mBluetoothService.connect(this.mPreferences.getDeviceConnectAddress());	         
         } catch (InterruptedException e) {
             e.printStackTrace();
         }    	
@@ -609,7 +593,7 @@ public class MainActivity extends Activity {
     }
         
     @SuppressLint("HandlerLeak")
-	private final Handler mHandler = new Handler() {
+	private final Handler bltHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
@@ -642,9 +626,8 @@ public class MainActivity extends Activity {
                 	onBltMessageChargeRead(message.arg1);                        
                     break;
 
-                case BluetoothMessages.MESSAGE_DEVICE_NAME:                    
-                    mConnectedDeviceInfo = message.getData().getString(kDeviceName);
-                    mToastObject.setText(getString(R.string.state_connected_to) +" "+ mConnectedDeviceInfo);
+                case BluetoothMessages.MESSAGE_DEVICE_NAME:                                        
+                    mToastObject.setText(getString(R.string.state_connected_to) +" "+ message.getData().getString(kDeviceName));
                     mToastObject.show();                    
                     break;
 
@@ -660,11 +643,9 @@ public class MainActivity extends Activity {
         switch (requestCode) {
             case IntentRequestCodes.REQUEST_CONNECT_DEVICE:
                 if (resultCode == Activity.RESULT_OK) {
-                    String devAddress = data.getExtras()
-                            .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
+                    String devAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
                     mPreferences.setDeviceConnectAddress(devAddress);
-                    ConnectToDevice(devAddress);
+                    this.mBluetoothService.connect(devAddress);                    
                 }
                 break;
                 
@@ -686,7 +667,7 @@ public class MainActivity extends Activity {
         MenuItem disconnectItem = menu.findItem(R.id.menu_item_disconnect);
         MenuItem scanItem = menu.findItem(R.id.menu_item_scan);
 
-        if (mBluetoothService != null && mBluetoothService.getState() == BluetoothConnectionState.STATE_CONNECTED) {
+        if (mBluetoothService.getState() == BluetoothConnectionState.STATE_CONNECTED) {
             disconnectItem.setVisible(true);
             scanItem.setVisible(false);
             if(mPreferences.isDebug()) {
@@ -699,21 +680,6 @@ public class MainActivity extends Activity {
         }        
     }
 
-    private void ConnectToDevice(String address) {   
-        if(mBluetoothService != null){
-            mBluetoothService.stop();
-            mBluetoothService = null;
-        }
-
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-
-        if (mBluetoothService == null) {
-            setupBluetoothService(device);
-        }
-
-        mBluetoothService.connect(device);
-    }       
-    
     public MainActivity() {
     }
 }
